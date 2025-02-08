@@ -25,14 +25,18 @@ import java.util.ArrayList;
 
 public class ClothManager {
 
-    public static double CLOTH_LENGTH = 0.25;
-    public static double CLOTH_WIDTH = 0.5;
+    public static double CLOTH_LENGTH = 1.75;
+    public static double CLOTH_WIDTH = 0.075;
 
     public Vector3d pos = new Vector3d();
     public ArrayList<ClothBody> bodies = new ArrayList<>();
 
     public ClothManager(Vector3d pos, int BodyCount) {
-        reset(pos, BodyCount);
+        reset(pos, 6);
+    }
+
+    public void reset(Vector3d pos) {
+        reset(pos, bodies.size()-1);
     }
 
     public void reset(Vector3d pos, int BodyCount) {
@@ -44,8 +48,6 @@ public class ClothManager {
     }
 
     public void tick(double delta) {
-        CLOTH_LENGTH = 1.5;
-        CLOTH_WIDTH = 0.075;
 
         // Update parent position
         var root = bodies.getFirst();
@@ -55,7 +57,7 @@ public class ClothManager {
         for (ClothBody body : bodies) {
             Vector3d vel = body.pos.sub(body.posCache, new Vector3d());
             body.accel.add(vel.mul(-0.15));
-            body.accel.add(0.0, -0.000098, 0.0);
+            body.accel.add(0.0, -0.00098, 0.0);
 
             body.update(delta);
         }
@@ -65,7 +67,7 @@ public class ClothManager {
             var body = bodies.get(i);
             var nextBody = bodies.get(i + 1);
 
-            for (int j = 0; j < bodies.size() - 1; j++) { body.containDistance(nextBody, (1.0/bodies.size()) * CLOTH_LENGTH ); }
+            for (int j = 0; j < bodies.size() * 20; j++) { body.containDistance(nextBody, (1.0/bodies.size()) * CLOTH_LENGTH ); }
         }
 
         // Collision pass
